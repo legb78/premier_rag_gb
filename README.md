@@ -7,12 +7,12 @@ L'idée : plutôt que de demander une réponse « de mémoire » à un LLM, on l
 passages pertinents d'une base de connaissances, et on lui impose de ne répondre **qu'à partir de
 ces passages**. Le système tient en trois briques :
 
-1. **La base vectorielle** ([vectordb.py](vectordb.py)) — crée ou recharge une base ChromaDB
+1. **La base vectorielle** ([src/vectordb.py](src/vectordb.py)) — crée ou recharge une base ChromaDB
    persistée sur disque, encode les phrases du corpus avec sentence-transformers, et sait
    retrouver les passages les plus proches d'une question.
-2. **Le RAG** ([rag.py](rag.py)) — orchestre tout : modération de la question, récupération des
+2. **Le RAG** ([src/rag.py](src/rag.py)) — orchestre tout : modération de la question, récupération des
    chunks, construction du prompt système, appel au LLM de Groq.
-3. **L'agent modérateur** ([moderator.py](moderator.py)) — avant toute chose, demande à un modèle
+3. **L'agent modérateur** ([src/moderator.py](src/moderator.py)) — avant toute chose, demande à un modèle
    de sécurité si la question est une tentative de *prompt injection*, et renvoie sa décision en JSON.
 
 Le corpus de test est volontairement une liste de **phrases inventées** (« Le chat bleu de Bob
@@ -40,7 +40,7 @@ GROQ_API_KEY=votre_cle_ici
 ## Utilisation
 
 ```
-python main.py
+python -m src.main
 ```
 
 Au premier lancement, la base vectorielle est créée et persistée dans `chroma_db/`. Aux lancements
@@ -64,16 +64,16 @@ question --> [modérateur] --injection ?--> refus immédiat (le LLM n'est jamais
 
 | Fichier | Rôle |
 |---|---|
-| [config.py](config.py) | Constantes : noms des modèles (embedding, LLM, modération) et chemins, définis à un seul endroit |
-| [corpus.py](corpus.py) | La liste des phrases inventées qui composent la base de connaissances |
-| [vectordb.py](vectordb.py) | Classe `VectorDB` : création / rechargement de la base ChromaDB, encodage, `retrieve(question, n)` |
-| [moderator.py](moderator.py) | Classe `Moderator` : `moderate(question)` renvoie `{"is_prompt_injection": true/false}` |
-| [rag.py](rag.py) | Classe `RAG` : `answer_question(question)` déroule tout le pipeline |
-| [main.py](main.py) | Script de démonstration (les tests de mise à l'épreuve) |
+| [src/config.py](src/config.py) | Constantes : noms des modèles (embedding, LLM, modération) et chemins, définis à un seul endroit |
+| [src/corpus.py](src/corpus.py) | La liste des phrases inventées qui composent la base de connaissances |
+| [src/vectordb.py](src/vectordb.py) | Classe `VectorDB` : création / rechargement de la base ChromaDB, encodage, `retrieve(question, n)` |
+| [src/moderator.py](src/moderator.py) | Classe `Moderator` : `moderate(question)` renvoie `{"is_prompt_injection": true/false}` |
+| [src/rag.py](src/rag.py) | Classe `RAG` : `answer_question(question)` déroule tout le pipeline |
+| [src/main.py](src/main.py) | Script de démonstration (les tests de mise à l'épreuve) |
 | `prompts/moderator_system.txt` | Prompt système du modérateur (sortie strictement JSON) |
 | `prompts/rag_system.txt` | Prompt système du RAG, avec le marqueur `{{Chunks}}` remplacé à chaque question |
 
-Le comportement du système se pilote depuis les **fichiers de prompts** et [config.py](config.py),
+Le comportement du système se pilote depuis les **fichiers de prompts** et [src/config.py](src/config.py),
 sans toucher au code : un prompt se retravaille, un modèle se change en une ligne.
 
 Un détail important : le nom du modèle d'embedding est enregistré **dans les métadonnées de la

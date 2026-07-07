@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Base vectorielle ChromaDB (générée au 1er run, ne doit pas être versionnée)
+chroma_db/
