@@ -47,6 +47,8 @@ class Config:
     chroma_path: Path = field(default=PROJECT_ROOT / "chroma_db")
     collection_name: str = "rag_corpus"
     prompts_dir: Path = field(default=PROJECT_ROOT / "prompts")
+    # Corpus : les phrases inventées (colonnes id, text, source, categorie).
+    corpus_path: Path = field(default=PROJECT_ROOT / "data" / "05_corpus_rag.csv")
 
     @property
     def moderator_prompt_path(self) -> Path:
