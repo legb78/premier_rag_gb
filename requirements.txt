@@ -5,3 +5,7 @@ chromadb
 # Génération + configuration
 groq
 python-dotenv
+
+# Interface web
+fastapi
+uvicorn[standard]
