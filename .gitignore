@@ -156,6 +156,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+premier_rag
 
 # Spyder project settings
 .spyderproject
